@@ -1,0 +1,64 @@
+insert into albumproducer (SSN,
+ALBUMIDENTIFIER,
+COPYRIGHTDATE,
+SPEED,
+TITLE) values ('675646638', '110', '10-march-2005', '40', 'happy times');
+
+select instrID,ssn from Instruments natural join plays where iname = 'guitar' or iname ='piano'
+select distinct instrID from plays natural join musicians where name = 'john';
+select distinct title from albumproducer natural join  (select ssn from plays natural join instruments where iname = 'guitar' or iname ='piano');
+
+insert into songsappears(SONGID,
+AUTHORSSN,
+TITLE,
+ALBUMIDENTIFIER) values('song1','876453283','afreen afreen','123');
+
+insert into songsappears(SONGID,
+AUTHORSSN,
+TITLE,
+ALBUMIDENTIFIER) values('song2','876453283','afreen afreen','123');
+
+insert into songsappears(SONGID,
+AUTHORSSN,
+TITLE,
+ALBUMIDENTIFIER) values('song3','675646638','happy times','110');
+
+insert into perform (SONGID,
+SSN) values ('song1','675646638');
+insert into perform (SONGID,
+SSN) values ('song2','675646638');
+insert into perform (SONGID,
+SSN) values ('song3','652338435');
+
+select M.ssn,M.name  from  musicians M, perform p1, perform p2  where (p1.songid='song1' AND p2.songid='song2' AND p1.SSN= p2.ssn AND M.ssn = p1.ssn);
+
+select M2.ssn, M2.name from musicians M2 except (select M1.ssn,M1.name from musicians M1 where M2.annualIncome > M1.annualIncome );
+select name, ssn from (select name, ssn from  musicians  order by annualIncome desc) where rownum<=1;
+
+SELECT name, ssn
+FROM musicians
+WHERE annualIncome= (select max(annualIncome) from musicians)
+
+(select name, ssn,annualIncome from musicians ) minus (select M1.name , M1.ssn,M1.annualIncome from musicians M1, musicians M2 where (m1.name <> m2.name AND m2.annualIncome> m1.annualIncome) );
+
+
+select m1.name
+from musicians as m1, musicians as m2
+where (m2.annualIncome <= m1.annualIncome);
+
+select name from musicians where annualIncome not in
+( select m1.name from musicians as m1, musicians as m2
+  where (m2.annualIncome <= m1.annualIncome));
+
+(select t.name,t.annualIncome from musicians t) minus (select m1.name,m1.annualIncome from musicians m1, musicians m2 where m1.ANNUALINCOME<m2.annualIncome);
+
+
+select l1.ssn,l2.ssn from lives l1, lives l2 where (l1.ssn != l2.ssn AND l1.address = l2.address);
+select distinct m1.name ,m2.name from musicians m1, musicians m2, lives l1, lives l2  where( m1.ssn = l1.ssn and m2.ssn = l2.ssn AND l1.ssn <> l2.ssn AND l1.address = l2.address );
+
+select m1.name  from musicians m1, musicians m2, perform p, SONGSAPPEARS S where (m2.name ='john' AND m2.ssn = S.AUTHORSSN AND S.songID = p.songID AND p.SSN = m1.SSN);
+
+select distinct m1.name from musicians m1,  perform p, SONGSAPPEARS S where (p.ssn = s.authorssn AND m1.ssn = p.SSN AND m1.ssn = S.AUTHORSSN);
+
+select ssn from SONGSAPPEARS natural join perform;
+select name from musicians where exists (select ssn from SONGSAPPEARS  )

@@ -1,0 +1,229 @@
+Submission by Prachi Gupta, User : pgupta13
+
+==============================================================================Schemas==================================================================================
+Student (
+G_number : VARCHAR,
+SSN : INTEGER,
+Transcripts : CHAR,
+Name : CHAR,
+MAJOR : CHAR,
+)
+
+PROFESSOR (
+SSN : INTEGER,
+Prof_NAME : CHAR,
+EMAIL : VARCHAR
+)
+
+DEPARTMENT (
+DEPARTMENTNAME : CHAR(50) NOT NULL,
+COURSE_NO : INTEGER
+)
+
+
+COURSE(
+COURSE_ID : VARCHAR,
+TITLE  : CHAR,
+CREDIT : INTEGER,
+
+PREREQ_ID : INTEGER)
+
+MAJOR (
+G_NUMBER : INTEGER ,
+COURSE_ID : VARCHAR)
+
+
+SECTION(
+COURSE_ID : VARCHAR,
+TITLE : CHAR,
+Course_status : CHAR,
+Section_No : INTEGER,
+Semester : INTEGER,
+Wait_List : INTEGER,
+Year : INTEGER,
+
+GTA : INTEGER,
+Prof_NAME : CHAR
+)
+
+
+REGISTRATION
+(
+G_NUMBER : INTEGER ,
+REG_STATUS : CHAR,
+SECTION_NO : INTEGER ,
+COURSE_STATUS : CHAR,
+
+WL_RANK : INTEGER
+)
+
+COURSE_TAKEN (
+
+G_NUMBER : INTEGER ,
+REG_STATUS : CHAR,
+SECTION_NO : INTEGER ,
+COURSE_STATUS : CHAR,
+
+COURSE_ID : VARCHAR,
+
+GRADE : INTEGER
+
+)
+
+======================================================================================================================================================================
+
+===========================================================Table creation==============================================================================================
+
+CREATE TABLE Student (
+G_number VARCHAR(50) NOT NULL,
+SSN INTEGER NOT NULL,
+Transcripts  CHAR(20),
+Name CHAR(20) NOT NULL,
+MAJOR  CHAR(25),
+PRIMARY KEY(G_number)
+
+)
+
+CREATE TABLE PROFESSOR (
+SSN  INTEGER NOT NULL,
+Prof_NAME  CHAR(25) NOT NULL,
+EMAIL  VARCHAR(25) NOT NULL,
+PRIMARY KEY(SSN),
+
+);
+
+CREATE TABLE DEPARTMENT (
+DEPARTMENTNAME  CHAR(50) NOT NULL,
+COURSE_NO  INTEGER,
+
+PRIMARY KEY(COURSE_NO)
+)
+
+CREATE TABLE COURSE(
+COURSE_ID  VARCHAR(25) NOT NULL,
+TITLE CHAR(25),
+CREDIT  INTEGER,
+
+PREREQ_ID INTEGER,
+PRIMARY KEY(COURSE_ID)
+
+)
+
+CREATE TABLE MAJOR (
+G_NUMBER INTEGER REFERENCES STUDENT(G_NUMBER),
+COURSE_ID VARCHAR(25)  REFERENCES COURSE(COURSE_ID),
+PRIMARY KEY(G_NUMBER  )
+)
+
+CREATE TABLE SECTION(
+COURSE_ID  VARCHAR(25) NOT NULL,
+TITLE CHAR (25) NOT NULL,
+Course_status CHAR(10),
+Section_No  INTEGER,
+Semester  INTEGER,
+Wait_List  INTEGER,
+Year INTEGER,
+primary key(COURSE_ID,Section_No),
+GTA INTEGER references student(g_number),
+Prof_NAME  CHAR(25) REFERENCES PROFESSOR(Prof_NAME)
+)
+
+
+CREATE TABLE REGISTRATION
+(
+G_NUMBER INTEGER REFERENCES STUDENT(G_NUMBER),
+REG_STATUS CHAR(10),
+SECTION_NO INTEGER REFERENCES SECTION(SECTION_NO),
+COURSE_STATUS CHAR(10),
+
+WL_RANK  INTEGER,
+PRIMARY KEY(G_NUMBER)
+)
+
+CREATE TABLE COURSE_TAKEN (
+
+G_NUMBER INTEGER REFERENCES STUDENT(G_NUMBER),
+REG_STATUS CHAR(10),
+SECTION_NO INTEGER REFERENCES SECTION(SECTION_NO),
+COURSE_STATUS CHAR(10),
+
+COURSE_ID  VARCHAR(25) REFERENCES COURSE(COURSE_ID),
+
+GRADE INTEGER
+
+)
+
+===============================================================================================================================================================
+
+=======================================================================Alter commands required=================================================================
+
+ALTER TABLE COURSE_TAKEN ADD PRIMARY KEY(G_NUMBER)
+
+ALTER TABLE PROFESSOR
+DROP PRIMARY KEY;
+
+ALTER TABLE PROFESSOR ADD PRIMARY KEY(PROF_NAME);
+
+
+ALTER TABLE registration
+ADD CONSTRAINT check_wl_rank
+  CHECK (wl_rank between 0 and 10 );
+
+ALTER TABLE department
+ADD CONSTRAINT check_department_name
+  CHECK (departmentname in('Computer Science','Information Systems', 'Data Analytics', 'Software Engineering', 'Telecommunications','Electrical Engineering','Civil Engineering') );
+
+ALTER TABLE course_taken
+ADD CONSTRAINT check_REG_STATUS
+  CHECK (REG_STATUS in('Registered','Waitlisted','Not Registered') );
+
+ALTER TABLE course_taken
+ADD CONSTRAINT check_course_status
+  CHECK (course_status in('Available','Not Available') );
+
+ALTER TABLE student
+  MODIFY major char(50) not null;
+
+
+  ALTER TABLE course
+  modify DEPARTMENTNAME char(20);
+=======================================================================================================================================================================
+====================================================================================Insert commands====================================================================
+
+
+INSERT INTO STUDENT (G_NUMBER,SSN, NAME, MAJOR) VALUES
+           ('01025257','557563783','Prachi Gupta','Computer Science'); 
+
+
+
+INSERT INTO Department (DEPARTMENTNAME,COURSE_NO) VALUES
+           ('Computer Science','530'); 
+   INSERT INTO Department (DEPARTMENTNAME,COURSE_NO) VALUES
+           ('Computer Science','531'); 
+           INSERT INTO Department (DEPARTMENTNAME,COURSE_NO) VALUES
+           ('Software Engineering','645'); 
+
+
+INSERT INTO PROFESSOR (SSN, PROF_NAME, EMAIL, DEPARTMENTNAME) VALUES ('874654', 'Gene Shuman', 'gshuman@gmu.edu', 'Computer Science')
+
+INSERT INTO STUDENT (G_NUMBER, SSN, NAME, MAJOR) VALUES ('01025257', '335374', 'Prachi Gupta', 'Computer Science')
+
+INSERT INTO SECTION (COURSE_ID, TITLE, COURSE_STATUS, SECTION_NO, SEMESTER, WAIT_LIST, YEAR, GTA, PROF_NAME) VALUES ('CS 550', 'Database Systems', 'Available', '1', '201701', '0', '2017', '26352745', 'Gene Shuman')
+INSERT INTO STUDENT (G_NUMBER, SSN, NAME, MAJOR) VALUES ('324789374', '7876456', 'Indranil Banerjee', 'Computer Science')
+
+
+INSERT INTO PROFESSOR (SSN, PROF_NAME, EMAIL, DEPARTMENTNAME) VALUES ('3638734', 'Dmitri Kaznachey', 'dkaznach@gmu.edu
+', 'Computer Science')
+
+INSERT INTO SECTION (COURSE_ID, TITLE, COURSE_STATUS, SECTION_NO, SEMESTER, WAIT_LIST, YEAR, GTA, PROF_NAME) VALUES ('CS 583', 'Analysis of Algorithms', 'Available ', '2', '201701', '0', '2017', '324789374', 'Dmitri Kaznachey         ')
+
+INSERT INTO COURSE_TAKEN (G_NUMBER, REG_STATUS, SECTION_NO, COURSE_STATUS, COURSE_ID, GRADE) VALUES ('01025257', 'Registered', '002', 'Available', 'CS 550', '0')
+INSERT INTO STUDENT (G_NUMBER, SSN, NAME, MAJOR) VALUES ('8723645', '9843567', 'Rahul Chouhan', 'Computer Science  ')
+
+
+INSERT INTO COURSE_TAKEN (G_NUMBER, REG_STATUS, SECTION_NO, COURSE_STATUS, COURSE_ID, GRADE) VALUES ('8723645', 'Registered', '1', 'Available', 'SWE 645', '0')
+INSERT INTO MAJOR (G_NUMBER, COURSE_ID) VALUES ('1025257', 'CS 550')
+
+
+INSERT INTO MAJOR (G_NUMBER, COURSE_ID) VALUES ('8723645', 'SWE 645')
+=====================================================================================================================================================================
